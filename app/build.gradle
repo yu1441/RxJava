@@ -76,13 +76,13 @@ android {
     //签名
     signingConfigs {
         debug {
-            storeFile file("../doc/yujing.jks")
+            storeFile file("doc/yujing.jks")
             storePassword "wtugeqh"
             keyAlias "yujing"
             keyPassword "wtugeqh"
         }
         release {
-            storeFile file("../doc/yujing.jks")
+            storeFile file("doc/yujing.jks")
             storePassword "wtugeqh"
             keyAlias "yujing"
             keyPassword "wtugeqh"

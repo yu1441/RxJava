@@ -76,16 +76,16 @@ android {
     //签名
     signingConfigs {
         debug {
-            storeFile file("doc/yujing.jks")
-            storePassword "wtugeqh"
-            keyAlias "yujing"
-            keyPassword "wtugeqh"
+            storeFile file("doc/yujingtest.jks")
+            storePassword "123456"
+            keyAlias "test"
+            keyPassword "123456"
         }
         release {
-            storeFile file("doc/yujing.jks")
-            storePassword "wtugeqh"
-            keyAlias "yujing"
-            keyPassword "wtugeqh"
+            storeFile file("doc/yujingtest.jks")
+            storePassword "123456"
+            keyAlias "test"
+            keyPassword "123456"
         }
     }
 
@@ -99,10 +99,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    implementation 'com.github.yu1441.utils3:net:3.3.2'
+    implementation 'com.github.yu1441.utils3:utils:3.3.2'
+    implementation 'com.github.yu1441.utils3:yurl:3.3.2'
+    implementation 'com.github.yu1441.utils3:ycrash:3.3.2'
+
     //gson  <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     implementation 'com.google.code.gson:gson:2.8.5'
     //对应的是com.android.support:recyclerview-v7:28.0.2
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     //-------------------------------------------------------------------------------------------------------
 

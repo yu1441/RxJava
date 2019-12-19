@@ -53,22 +53,23 @@ android {
     }
     //打包
     android.applicationVariants.all { variant ->
-        //判断是release还是debug版本
-        def buildType = variant.buildType.name
         //获取渠道名称
-        //def channel = variant.productFlavors[0].name
-        def channel = "RxJava"
+        //def appName = variant.productFlavors[0].name
+        def appName = "RxJava"
         def fileName//获取当前时间的"YYYY-MM-dd"格式。
         def createDate = new Date().format("YYYY-MM-dd", TimeZone.getTimeZone("GMT+08:00"))
         def createTime = new Date().format("HH-mm-ss", TimeZone.getTimeZone("GMT+08:00"))
         variant.outputs.each {
+            //判断是release还是debug版本
+            def buildType = variant.buildType.name
             if (buildType == "release") {
-                variant.getPackageApplicationProvider().get().outputDirectory = new File(project.rootDir.absolutePath + "/apks")
-                fileName = "${channel}_v${defaultConfig.versionName}_${versionCode}_${createDate}_${createTime}_${buildType}.apk"
+                variant.getPackageApplicationProvider().get().outputDirectory = new File(project.projectDir.absolutePath + "/apk")
+                fileName = "${appName}_v${defaultConfig.versionName}_${versionCode}_${createDate}_${createTime}_${buildType}.apk"
                 it.outputFileName = fileName
             }
             if (buildType == "debug") {
-                fileName = "${channel}_v${defaultConfig.versionName}_${versionCode}_${buildType}.apk"
+                variant.getPackageApplicationProvider().get().outputDirectory = new File(project.projectDir.absolutePath + "/build/apk")
+                fileName = "${appName}_v${defaultConfig.versionName}_${versionCode}_${buildType}.apk"
                 it.outputFileName = fileName
             }
         }
@@ -99,10 +100,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.github.yu1441.utils3:net:3.3.2'
-    implementation 'com.github.yu1441.utils3:utils:3.3.2'
-    implementation 'com.github.yu1441.utils3:yurl:3.3.2'
-    implementation 'com.github.yu1441.utils3:ycrash:3.3.2'
+    implementation 'com.github.yu1441.utils3:net:3.3.3'
+    implementation 'com.github.yu1441.utils3:utils:3.3.3'
+    implementation 'com.github.yu1441.utils3:yurl:3.3.3'
+    implementation 'com.github.yu1441.utils3:ycrash:3.3.3'
 
     //gson  <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     implementation 'com.google.code.gson:gson:2.8.5'

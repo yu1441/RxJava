@@ -40,7 +40,7 @@ public class YResponseTransformer {
     }
 
     /**
-     * 返回对象用到，用此方法最终会返回YResponse<T>,原样
+     * 返回对象用到，用此方法最终会返回YResponse<T>中的T,剥壳壳
      */
     public static <T> ObservableTransformer<YResponse<T>, T> handleResult() {
         return upstream -> upstream.onErrorResumeNext(new Function<Throwable, ObservableSource<? extends YResponse<T>>>() {
@@ -52,7 +52,7 @@ public class YResponseTransformer {
     }
 
     /**
-     * 返回对象用到，用此方法最终会返回YResponse<T>中的T,剥壳壳
+     * 返回对象用到，用此方法最终会返回YResponse<T>,原样
      */
     public static <T> ObservableTransformer<YResponse<T>, YResponse<T>> handleResultOriginal() {
         return upstream -> upstream.onErrorResumeNext(new Function<Throwable, ObservableSource<? extends YResponse<T>>>() {

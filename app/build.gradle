@@ -51,6 +51,7 @@ android {
 
         }
     }
+
     //打包
     android.applicationVariants.all { variant ->
         //获取渠道名称
@@ -100,10 +101,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.github.yu1441.utils3:net:3.3.3'
-    implementation 'com.github.yu1441.utils3:utils:3.3.3'
-    implementation 'com.github.yu1441.utils3:yurl:3.3.3'
-    implementation 'com.github.yu1441.utils3:ycrash:3.3.3'
+    implementation 'com.github.yutils.utils3:net:3.3.6'
+    implementation 'com.github.yutils.utils3:utils:3.3.6'
+    implementation 'com.github.yutils.utils3:yurl:3.3.6'
+    implementation 'com.github.yutils.utils3:ycrash:3.3.6'
 
     //gson  <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     implementation 'com.google.code.gson:gson:2.8.5'

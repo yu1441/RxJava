@@ -1,72 +1,16 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.yujing.rxjava"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    dataBinding {
-        enabled = true
-    }
-    buildTypes {
-        debug {
-            buildConfigField 'String', 'SERVER_PORT', server_port
-            buildConfigField 'String', 'SERVER_IP', server_ip
-            buildConfigField 'String', 'SERVER_URL', server_url
-            manifestPlaceholders = ["app_name": "@string/app_name_debug"]
-            applicationIdSuffix ".debug"//包名后缀
-            // 显示Log
-            buildConfigField "boolean", "LOG_DEBUG", "true"
-            versionNameSuffix "-debug"
-            minifyEnabled false
-            zipAlignEnabled false
-            shrinkResources false
-            signingConfig signingConfigs.debug
-        }
-        release {
-            buildConfigField 'String', 'SERVER_PORT', server_port
-            buildConfigField 'String', 'SERVER_IP', server_ip
-            buildConfigField 'String', 'SERVER_URL', server_url
-            manifestPlaceholders = ["app_name": "@string/app_name"]
-            // 不显示Log
-            buildConfigField "boolean", "LOG_DEBUG", "false"
-            //混淆
-            minifyEnabled false
-            //Zipalign优化
-            zipAlignEnabled false
-            // 移除无用的resource文件
-            shrinkResources false
-            //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明，后一个文件是自己的定义混淆文件
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-        }
-    }
-
-    //打包
-    android.applicationVariants.all { variant ->
-        //def appName = variant.productFlavors[0].name //获取渠道名称
-        def appName = "RxJava" //rootProject.name
-        def createDate = new Date().format("YYYYMMdd", TimeZone.getTimeZone("GMT+08:00"))
-        def createTime = new Date().format("HHmmss", TimeZone.getTimeZone("GMT+08:00"))
-        variant.outputs.all {
-            //variant.getPackageApplicationProvider().get().outputDirectory = new File(project.projectDir.absolutePath + "/build/apk")
-            //判断是release还是debug版本
-            if (variant.buildType.name == "release") {
-                it.outputFileName = "${appName}_v${defaultConfig.versionName}_${versionCode}_${createDate}_${createTime}_release.apk"
-            } else if (variant.buildType.name == "debug") {
-                it.outputFileName = "${appName}_v${defaultConfig.versionName}_${versionCode}_${createDate}_${createTime}_debug.apk"
-            }
-        }
     }
     //签名
     signingConfigs {
@@ -83,57 +27,127 @@ android {
             keyPassword "123456"
         }
     }
+
+    buildTypes {
+        debug {
+            buildConfigField 'String', 'SERVER_PORT', server_port
+            buildConfigField 'String', 'SERVER_IP', server_ip
+            buildConfigField 'String', 'SERVER_URL', server_url
+            manifestPlaceholders = ["app_name": "@string/app_name_debug"]
+            //包名后缀
+            applicationIdSuffix ".debug"
+            //版本名后缀
+            def data = new Date().format("YYYYMMdd", TimeZone.getTimeZone("GMT+08:00"))
+            versionNameSuffix ".${data}"
+            //混淆
+            minifyEnabled false
+            //Zipalign优化
+            zipAlignEnabled false
+            // 移除无用的resource文件
+            shrinkResources false
+            //签名配置
+            signingConfig signingConfigs.debug
+        }
+        release {
+            buildConfigField 'String', 'SERVER_PORT', server_port
+            buildConfigField 'String', 'SERVER_IP', server_ip
+            buildConfigField 'String', 'SERVER_URL', server_url
+            //app名称
+            manifestPlaceholders = ["app_name": "@string/app_name"]
+            //版本名后缀
+            //def data = new Date().format("YYMMdd", TimeZone.getTimeZone("GMT+08:00"))
+            //versionNameSuffix ".${data}"
+            //混淆
+            minifyEnabled false
+            //Zipalign优化
+            zipAlignEnabled false
+            //移除无用的resource文件
+            shrinkResources false
+            //签名配置
+            signingConfig signingConfigs.release
+            //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明，后一个文件是自己的定义混淆文件
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //打包
+    android.applicationVariants.all { variant ->
+        //def appName = variant.productFlavors[0].name //获取渠道名称
+        def appName = "RxJava" //rootProject.name
+        def createDate = new Date().format("YYYYMMdd", TimeZone.getTimeZone("GMT+08:00"))
+        def createTime = new Date().format("HHmmss", TimeZone.getTimeZone("GMT+08:00"))
+        variant.outputs.all {
+            it.outputFileName = "${appName}_v${versionName}_${versionCode}_${createDate}_${createTime}_${variant.buildType.name}.apk"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures{
+        dataBinding = true
+    }
+    //@Parcelize传值必须
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.github.yutils.utils3:net:3.4.2'
-    implementation 'com.github.yutils.utils3:utils:3.4.2'
-    implementation 'com.github.yutils.utils3:yurl:3.4.2'
-    implementation 'com.github.yutils.utils3:ycrash:3.4.2'
+//    implementation 'com.github.yutils:YSerialPort:2.0.9'
+    implementation 'com.github.yutils:yutils:1.2.3'
+    implementation 'com.github.yutils:ycrash:1.0.3'
+    implementation 'com.github.yutils:yhttp:1.0.6'
 
     //gson  <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     //对应的是com.android.support:recyclerview-v7:28.0.2
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
-    //-------------------------------------------------------------------------------------------------------
 
+    //____________________________________________________________RxJava____________________________________________________________
     //rxjava2，https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
-    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.13'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.19'
     //rxandroid，https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxandroid
     implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.1.1'
-    // rxbinding，https://mvnrepository.com/artifact/com.jakewharton.rxbinding3/rxbinding
-    implementation group: 'com.jakewharton.rxbinding3', name: 'rxbinding', version: '3.0.0'
-
     //自动解绑，https://mvnrepository.com/artifact/com.trello.rxlifecycle3/rxlifecycle-components
     implementation group: 'com.trello.rxlifecycle3', name: 'rxlifecycle-components', version: '3.1.0'
-    //-------------------------------------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/com.blankj/rxbus
+    implementation group: 'com.blankj', name: 'rxbus', version: '1.6'
 
+    // rxbinding，https://mvnrepository.com/artifact/com.jakewharton.rxbinding3/rxbinding
+    implementation group: 'com.jakewharton.rxbinding3', name: 'rxbinding', version: '3.1.0'
+    //____________________________________________________________RxJava____________________________________________________________
+
+    //____________________________________________________________retrofit____________________________________________________________
     //retrofit，https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
-    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.6.2'
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
     //支持Gson解析，https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson
-    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.6.2'
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
     //衔接 Retrofit & RxJava，注意使用RxJava2的版本，https://mvnrepository.com/artifact/com.jakewharton.retrofit/retrofit2-rxjava2-adapter
     implementation group: 'com.jakewharton.retrofit', name: 'retrofit2-rxjava2-adapter', version: '1.0.0'
+    //____________________________________________________________retrofit____________________________________________________________
 
-    //-------------------------------------------------------------------------------------------------------
 
     // https://mvnrepository.com/artifact/com.blankj/rxbus
     implementation group: 'com.blankj', name: 'rxbus', version: '1.6'
 
     //okhttp，https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     //https://mvnrepository.com/artifact/org.conscrypt/conscrypt-openjdk-uber
-    implementation group: 'org.conscrypt', name: 'conscrypt-openjdk-uber', version: '2.2.1'
+    implementation group: 'org.conscrypt', name: 'conscrypt-openjdk-uber', version: '2.5.1'
     //okhttp日志打印，// https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     //adapter-rxjava，https://mvnrepository.com/artifact/com.squareup.retrofit2/adapter-rxjava
     //implementation group: 'com.squareup.retrofit2', name: 'adapter-rxjava', version: '2.6.2'

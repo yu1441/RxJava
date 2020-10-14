@@ -1,24 +1,19 @@
 package com.yujing.rxjava.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import com.blankj.rxbus.RxBus;
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
-import com.yujing.net.Ynet;
 import com.yujing.rxjava.contract.OnResponse;
 import com.yujing.rxjava.contract.RxBusMessage;
+import com.yujing.utils.YPermissions;
 import com.yujing.utils.YShow;
 import com.yujing.utils.YToast;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -45,7 +40,7 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
             binding = DataBindingUtil.setContentView(this, contentViewId);
         }
         RxBus.getDefault().subscribeSticky(this, AndroidSchedulers.mainThread(), defaultCallback);
-        initPermission();//获取权限
+        YPermissions.requestAll(this);
         initData();
     }
 
@@ -66,7 +61,6 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
      */
     protected abstract void initData();
 
-
     /**
      * 注册默认RxBus
      */
@@ -77,7 +71,6 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
             BaseActivity.this.onEvent(rxBusMessage);
         }
     };
-
 
     /**
      * 添加订阅
@@ -98,34 +91,6 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
         }
     }
 
-    /**
-     * 获取权限
-     */
-    private void initPermission() {
-        String[] permissions = {
-                Manifest.permission.REQUEST_INSTALL_PACKAGES,
-                Manifest.permission.INTERNET,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CAMERA,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.CHANGE_WIFI_STATE
-        };
-        ArrayList<String> toApplyList = new ArrayList<String>();
-        for (String perm : permissions) {
-            if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
-                toApplyList.add(perm); // 进入到这里代表没有权限.
-            }
-        }
-        String[] tmpList = new String[toApplyList.size()];
-        if (!toApplyList.isEmpty()) {
-            ActivityCompat.requestPermissions(this, toApplyList.toArray(tmpList), 123);
-        }
-    }
 
     // 此处为android 6.0以上动态授权的回调，用户自行实现。
     @Override
@@ -162,7 +127,7 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
      * 显示toast
      */
     protected void show(String str) {
-        if (str == null||str.isEmpty())
+        if (str == null || str.isEmpty())
             return;
         YToast.show(getApplicationContext(), str);
     }
@@ -220,8 +185,6 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends RxAppCompa
     @Override
     public void finish() {
         super.finish();
-        // 清除网络请求队列
-        Ynet.stopAll();
         YShow.finish();
     }
 }

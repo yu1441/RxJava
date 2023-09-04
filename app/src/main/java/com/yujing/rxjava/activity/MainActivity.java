@@ -6,8 +6,7 @@ import android.util.Log;
 
 import com.blankj.rxbus.RxBus;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.jakewharton.rxbinding3.view.RxView;
-import com.yujing.rxjava.BuildConfig;
+import com.jakewharton.rxbinding4.view.RxView;
 import com.yujing.rxjava.R;
 import com.yujing.rxjava.contract.RxBusMessage;
 import com.yujing.rxjava.databinding.ActivityMainBinding;
@@ -51,21 +50,26 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     final String TAG = "MainActivity";
     ObservableEmitter<Integer> oe;
     MainPresenter mainPresenter;
+
     @Override
     protected Integer getContentLayoutId() {
         return R.layout.activity_main;
     }
+
     @SuppressLint("CheckResult")
     @Override
     protected void initData() {
         observable1.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
-        addDisposable(RxView.clicks(binding.btn1)
+
+        RxView.clicks(binding.btn1)
                 .throttleFirst(2, TimeUnit.SECONDS)
-                .subscribe(o -> bt1()));
-        addDisposable(RxView.longClicks(binding.btn1)
-                .subscribe(o -> bt2()));
+                .subscribe(o -> bt1());
+
+        RxView.longClicks(binding.btn1)
+                .subscribe(o -> bt2());
+
         binding.btn3.setOnClickListener(v -> bt3());
         binding.btn4.setOnClickListener(v -> bt4());
         binding.btn5.setOnClickListener(v -> bt5());
@@ -187,7 +191,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     public void onEvent(RxBusMessage<?> rxBusMessage) {
 
     }
-
 
 
     RxBus.Callback callback2 = new RxBus.Callback<String>() {
@@ -840,7 +843,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         //                }).start();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.SERVER_URL)
+                .baseUrl("https://api.apiopen.top/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         YRequest request = retrofit.create(YRequest.class);
@@ -861,7 +864,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     private void bt24() {
         //https://www.apiopen.top/weatherApi?city=成都
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.SERVER_URL)// 设置 网络请求 Url
+                .baseUrl("https://api.apiopen.top/")// 设置 网络请求 Url
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
                 .build();

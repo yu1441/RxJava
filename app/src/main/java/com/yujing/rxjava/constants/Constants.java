@@ -7,7 +7,7 @@ import com.yujing.rxjava.BuildConfig;
  * @author yujing 2019年10月24日13:55:47
  */
 public class Constants {
-    public static String HOST = BuildConfig.SERVER_URL;
+    public static String HOST = "https://www.qq.com";
     //https://www.apiopen.top/weatherApi?city=成都
     public static final String WEATHER = "weatherApi";
     //https://www.apiopen.top/getWangYiNews
